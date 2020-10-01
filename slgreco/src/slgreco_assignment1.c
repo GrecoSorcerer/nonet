@@ -54,13 +54,12 @@
   *
   * This file contains the server init and main while loop for tha application.
   * Uses the select() API to multiplex between network I/O and STDIN.
-  * 
-  * 
+  *
+  *
   * @param  argc Number of arguments
   * @param  argv The argument list
   * @return 0 EXIT_SUCCESS
   **/
-* /
 
 #define BACKLOG 5
 #define STDIN 0
@@ -68,7 +67,6 @@
 #define CMD_SIZE 100
 #define BUFFER_SIZE 256
 
-char* PORT;
 
 
 /**
@@ -78,6 +76,10 @@ char* PORT;
 int server(int argc, char** argv)
 {
 
+    if (argc != 3) {
+        printf("Usage:%s [port]\n", argv[0]);
+        exit(-1);
+    }
     int port, server_socket, head_socket, selret, sock_index, fdaccept = 0, caddr_len;
     struct sockaddr_in server_addr, client_addr;
     fd_set master_list, watch_list;
@@ -198,8 +200,10 @@ int server(int argc, char** argv)
 // END SERVER
 ///
 
-
-
+int client(void)
+{
+  return 0;
+}
 
 /**
  * main function
@@ -218,13 +222,15 @@ int main(int argc, char **argv)
 
 	/*Start Here*/
 
-    if (argc != 3) {
-        printf("Usage:%s [port]\n", argv[0]);
-        exit(-1);
-    }
+  //TODO: check number of arguments
 
-    if 
-
-
+  if (!strcmp(argv[1],"s"))
+  {
+    server(argc, argv);
+  }
+  else if (!strcmp(argv[1],"c"))
+  {
+    // TODO
+  }
 	return 0;
 }
