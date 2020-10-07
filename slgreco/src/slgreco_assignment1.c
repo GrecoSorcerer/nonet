@@ -86,6 +86,10 @@ char *CON_IP;
 
 int connect_to_host(char *server_ip, int server_port, struct sockaddr_in **remote);
 
+char* reliableget_IP()
+{
+
+}
 
 int handleCommand(char *command_str, struct sockaddr_in info, int fd)
 {
@@ -102,7 +106,6 @@ int handleCommand(char *command_str, struct sockaddr_in info, int fd)
 		cse4589_print_and_log("[%s:SUCCESS]\n",command_str);
 		cse4589_print_and_log("I, %s, have read and understood the course academic integrity policy.\n", "slgreco");
 		cse4589_print_and_log("[%s:END]\n",command_str);
-		fflush(stdout);
 	}
 	else if (!strncmp(command_str,CMD_IP,STRLEN_IP))
 	{
@@ -110,8 +113,16 @@ int handleCommand(char *command_str, struct sockaddr_in info, int fd)
 		{
 
 			char ip4[INET_ADDRSTRLEN];
-			inet_ntop(AF_INET,&(info.sin_addr), ip4, INET_ADDRSTRLEN);
+			struct addrinfo* res;
+			//inet_ntop(AF_INET,&(info.sin_addr), ip4, INET_ADDRSTRLEN);
 			
+			getaddrinfo("8.8.8.8", "53", NULL, &res);
+
+			int udp_dummy_soc = socket(res->ai_family, SOCK_DGRAM, IPPROTO_UDP);
+			connect(udp_dummy_soc, res->ai_addr, res->ai_addrlen);
+			
+			printf(getsockname(udp_dummy_soc, res->ai_addr, res->ai_addrlen););
+			fflush(stdout);
 			cse4589_print_and_log("[%s:SUCCESS]\n",command_str);
 			cse4589_print_and_log("IP:%s\n", ip4);
 			cse4589_print_and_log("[%s:END]\n",command_str);
@@ -291,7 +302,7 @@ int client(char *ip, int port)
 		if(fgets(msg, MSG_SIZE-1, stdin) == NULL) //Mind the newline character that will be written to msg
 			exit(-1);
 
-		handleCommand(msg, *coninf, server);
+		handleCommand(msg, coninf[0], server);
 		
 		/*
 		//printf("I got: %s(size:%d chars)", msg, strlen(msg));
