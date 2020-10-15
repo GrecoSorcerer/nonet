@@ -29,15 +29,21 @@
 
 //#include "../include/chatapp.h"
 #include "../include/global.h"
+#include "../include/command_handler.h"
+#include "../include/client.h"
 #include "../include/logger.h"
+
+// EXTERN Variables defined in header file
+int CLIENTPORT = -1; // No listening port set
+int LOGGINSTATE = 0; // User not logged in 
 
 int connect_to_host(char *server_ip, int server_port);
 
 int client(char *ip, int port)
 {
-
+	PORT = port;
 	int server;
-	server = connect_to_host(ip, port);
+	server = connect_to_host(ip, PORT);
 
 	while(TRUE){
 		printf("\n[PA1-Client@CSE489/589]$ ");

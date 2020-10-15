@@ -40,29 +40,30 @@
 
 //#include "../include/chatapp.h"
 #include "../include/global.h"
+#include "../include/command_handler.h"
+#include "../include/server.h"
 #include "../include/logger.h"
-
 
 
 int server(int _port)
 {
-
+	
+	PORT = _port;
     int port, server_socket, head_socket, selret, sock_index, fdaccept = 0, caddr_len;
     struct sockaddr_in server_addr, client_addr;
     fd_set master_list, watch_list;
-
+	
     /* Socket */
     server_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (server_socket < 0)
         perror("Cannot create socket");
 
     /* Fill up sockaddr_in struct */
-    port = _port;
     bzero(&server_addr, sizeof(server_addr));
 
     server_addr.sin_family = AF_INET;
     server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    server_addr.sin_port = htons(port);
+    server_addr.sin_port = htons(PORT);
 
     /* Bind */
     if (bind(server_socket, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0)

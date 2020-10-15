@@ -32,6 +32,8 @@
 #include <arpa/inet.h>
 
 #include "../include/global.h"
+#include "../include/client.h"
+#include "../include/server.h"
 #include "../include/logger.h"
 
 
@@ -69,15 +71,14 @@ int main(int argc, char **argv)
 	 * argv[0] argv[1] argv[2]
 	 */
 	
-	PORT = atoi(argv[2]);
 	if (!strcmp(argv[1],"s"))
 	{
-		server(PORT);
+		server(atoi(argv[2]));
 	}
 	else if (!strcmp(argv[1],"c"))
 	{
 		CON_IP = "127.0.0.1";
-		client(CON_IP,PORT);
+		client(CON_IP,atoi(argv[2]));
 	}
 	
 	return 0;
