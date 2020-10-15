@@ -8,7 +8,7 @@
 
 extern int STRLEN_AUTHOR, STRLEN_BROADCAST, STRLEN_IP, STRLEN_PORT;
 
-char* reliableget_IP(void);
+void get_IP_and_Hostname(char **hostName, char **IP);
 int handleCommand(char *command_str, int fd);
 
 #endif

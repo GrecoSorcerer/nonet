@@ -13,6 +13,7 @@
 #define CMD_SIZE 100
 
 extern int PORT; //listening port of porcess
+extern _Bool IS_CLIENT;
 extern char *CON_IP;
 
 #endif

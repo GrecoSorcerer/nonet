@@ -37,7 +37,6 @@
 #include "../include/logger.h"
 
 
-
 /**
  * main function
  *
@@ -50,6 +49,7 @@
 // Declared in Global.h defined in main
 int PORT = -1;
 char *CON_IP = "0.0.0.0";
+_Bool IS_CLIENT = -1;
 
 int main(int argc, char **argv)
 {
@@ -73,11 +73,13 @@ int main(int argc, char **argv)
 	
 	if (!strcmp(argv[1],"s"))
 	{
+		_Bool IS_CLIENT = 0;
 		server(atoi(argv[2]));
 	}
 	else if (!strcmp(argv[1],"c"))
 	{
 		CON_IP = "127.0.0.1";
+		IS_CLIENT = 1;
 		client(CON_IP,atoi(argv[2]));
 	}
 	

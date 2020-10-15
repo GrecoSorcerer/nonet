@@ -1,8 +1,15 @@
 
 #include <stdio.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 //#include "../include/chatapp.h"
 #include <strings.h>
 #include <string.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 #include "../include/global.h"
 #include "../include/command_handler.h"
 #include "../include/logger.h"
@@ -12,11 +19,25 @@ int STRLEN_BROADCAST = strlen(CMD_BROADCAST);
 int STRLEN_IP 		 = strlen(CMD_IP);
 int STRLEN_PORT		 = strlen(CMD_PORT);
 
-char* reliableget_IP(void)
+void get_IP_and_Hostname(char **hostName, char **IP)
 {
 
-}
+	/* Programmed using the instructions provided here: (unreliable method)
+	 * (link)
+	 */
+	
+	char *_IP;
+	char host[256];
+	struct hostent *host_entry;
+	int hostname;
+	hostname = gethostname(host, sizeof(host));
+	host_entry = gethostbyname(host);
 
+	_IP = inet_ntoa( *( (struct in_addr*) host_entry->h_addr_list[0] ) );
+	
+	*IP = _IP;
+	*hostName = host;
+}
 
 int handleCommand(char *command_str, int fd)
 {
@@ -39,10 +60,21 @@ int handleCommand(char *command_str, int fd)
 	else if (!strncmp(command_str,CMD_IP,STRLEN_IP))
 	{
 		// 5 Points
-		
-		cse4589_print_and_log("[%s:ERROR]\n", command_str);
-		cse4589_print_and_log("[%s:END]\n",command_str);
-		
+
+		char *hostName;
+		char *IP = "-1.-1.-.1";
+
+		get_IP_and_Hostname(&hostName,&IP);
+		if(!strcmp(IP,"-1.-1.-.1"))
+		{
+			cse4589_print_and_log("[%s:ERROR]\n", command_str);
+			cse4589_print_and_log("[%s:END]\n",command_str);
+		} else {
+
+			cse4589_print_and_log("[%s:SUCCESS]\n",command_str);
+			cse4589_print_and_log("IP:%s\n", IP);
+			cse4589_print_and_log("[%s:END]\n",command_str);
+		}
 	}
 	else if (!strncmp(command_str,CMD_PORT,STRLEN_PORT))
 	{
