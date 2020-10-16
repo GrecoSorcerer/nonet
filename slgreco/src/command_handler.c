@@ -1,5 +1,6 @@
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -107,7 +108,7 @@ int handleCommand(char *command_str, int fd)
 		if (tok != NULL) 
 		{
 			ip = tok;
-		}
+		} 
 
 		tok = strtok(NULL, " "); // Gets the port token
 		if (tok != NULL)
@@ -119,7 +120,7 @@ int handleCommand(char *command_str, int fd)
 
 		SERVER = connect_to_host(CON_IP, CON_PORT);
 		LOGGINSTATE = 1;
-		printf("attempting connection on\nIP: %s\nPort: %i\n",CON_IP,SERVERPORT);
+		printf("attempting connection on\nIP: %s\nPort: %i\n",CON_IP,CON_PORT);
 		fflush(stdout);
 		
 	}

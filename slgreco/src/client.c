@@ -37,8 +37,8 @@
 int CLIENTPORT = -1; // No listening port set
 int LOGGINSTATE = 0; // User not logged in 
 int SERVER = -1; // fd value
-
-int connect_to_host(char *server_ip, int server_port);
+int CON_PORT = -1;
+char *CON_IP = "0.0.0.0";
 
 int client(char *ip, int listen_port)
 {
@@ -76,25 +76,29 @@ int client(char *ip, int listen_port)
 
 		handleCommand(msg, SERVER);
 		
-		/*
+		
 		//printf("I got: %s(size:%d chars)", msg, strlen(msg));
-		if(strncmp(msg,CMD_AUTHOR,STRLEN_AUTHOR))
+		printf("\nSENDing it to the remote server %i ... ", SERVER);
+		if(send(SERVER, msg, strlen(msg), 0) == strlen(msg))
 		{
-			printf("\nSENDing it to the remote server ... ");
-			if(send(server, msg, strlen(msg), 0) == strlen(msg))
-				printf("Done!\n");
-				fflush(stdout);
+			printf("Done!\n");
+			fflush(stdout);
 		}
-		*/
+		
+		
 		/* Initialize buffer to receieve response */
 		char *buffer = (char*) malloc(sizeof(char)*BUFFER_SIZE);
 		memset(buffer, '\0', BUFFER_SIZE);
 		
-		if(recv(SERVER, buffer, BUFFER_SIZE, 5) >= 0)
+		if(recv(SERVER, buffer, BUFFER_SIZE, 0) >= 0)
 		{
-			printf("Server responded: %s", buffer);
+			printf("Server %i responded: %s", SERVER, buffer);
+			fflush(stdout);
+		} else {
+			printf("Waiting on response from  server.\n");
 			fflush(stdout);
 		}
+		
 		
 	}
 }

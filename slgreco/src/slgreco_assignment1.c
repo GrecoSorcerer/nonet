@@ -48,7 +48,6 @@
 
 // Declared in Global.h defined in main
 int PORT = -1;
-char *CON_IP = "0.0.0.0";
 _Bool IS_CLIENT = -1;
 
 int main(int argc, char **argv)
@@ -78,7 +77,7 @@ int main(int argc, char **argv)
 	}
 	else if (!strcmp(argv[1],"c"))
 	{
-		CON_IP = "127.0.0.1";
+		CON_IP = "128.205.36.36";
 		IS_CLIENT = 1;
 		client(CON_IP,atoi(argv[2]));
 	}
