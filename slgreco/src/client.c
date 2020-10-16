@@ -1,6 +1,6 @@
 /**
  * @client
- * @author  Swetank Kumar Saha <swetankk@buffalo.edu>
+ * @author  Swetank Kumar Saha <swetankk@buffalo.edu>, Salvatore Leon Greco <slgreco@buffalo.edu>
  * @version 1.0
  *
  * @section LICENSE
@@ -36,14 +36,32 @@
 // EXTERN Variables defined in header file
 int CLIENTPORT = -1; // No listening port set
 int LOGGINSTATE = 0; // User not logged in 
+int SERVER = -1; // fd value
 
 int connect_to_host(char *server_ip, int server_port);
 
-int client(char *ip, int port)
+int client(char *ip, int listen_port)
 {
-	PORT = port;
-	int server;
-	server = connect_to_host(ip, PORT);
+	PORT = listen_port;
+	
+	int server_port = -1; // -1 if not set
+
+	while(!LOGGINSTATE) 
+	{
+		printf("\n[PA1-Client@CSE489/589]$ ");
+		fflush(stdout);
+
+		char* msg = (char*)malloc(sizeof(char) * MSG_SIZE);
+		memset(msg, '\0', MSG_SIZE);
+
+		if (fgets(msg, MSG_SIZE - 1, stdin) == NULL) //Mind the newline character that will be written to msg
+			exit(-1);
+
+		//handle_client_command(msg);
+		handleCommand(msg, -1);
+
+	}
+
 
 	while(TRUE){
 		printf("\n[PA1-Client@CSE489/589]$ ");
@@ -56,7 +74,7 @@ int client(char *ip, int port)
 		if(fgets(msg, MSG_SIZE-1, stdin) == NULL) //Mind the newline character that will be written to msg
 			exit(-1);
 
-		handleCommand(msg, server);
+		handleCommand(msg, SERVER);
 		
 		/*
 		//printf("I got: %s(size:%d chars)", msg, strlen(msg));
@@ -72,7 +90,7 @@ int client(char *ip, int port)
 		char *buffer = (char*) malloc(sizeof(char)*BUFFER_SIZE);
 		memset(buffer, '\0', BUFFER_SIZE);
 		
-		if(recv(server, buffer, BUFFER_SIZE, 5) >= 0)
+		if(recv(SERVER, buffer, BUFFER_SIZE, 5) >= 0)
 		{
 			printf("Server responded: %s", buffer);
 			fflush(stdout);

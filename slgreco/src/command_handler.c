@@ -13,9 +13,12 @@
 #include "../include/global.h"
 #include "../include/command_handler.h"
 #include "../include/logger.h"
+#include "../include/server.h"
+#include "../include/client.h"
 
 int STRLEN_AUTHOR	 = strlen(CMD_AUTHOR);
 int STRLEN_BROADCAST = strlen(CMD_BROADCAST);
+int STRLEN_LOGIN	 = strlen(CMD_LOGIN);
 int STRLEN_IP 		 = strlen(CMD_IP);
 int STRLEN_PORT		 = strlen(CMD_PORT);
 
@@ -91,6 +94,34 @@ int handleCommand(char *command_str, int fd)
 			cse4589_print_and_log("[%s:ERROR]\n", command_str);
 			cse4589_print_and_log("[%s:END]\n",command_str);
 		}
+	}
+	else if (!strncmp(command_str, CMD_LOGIN, STRLEN_LOGIN))
+	{
+		// 15 Points
+		char* tok;
+		char* ip;
+		int port = -1;
+
+		tok = strtok(command_str, " "); // Gets the command token
+		tok = strtok(NULL, " "); // Gets the ip token
+		if (tok != NULL) 
+		{
+			ip = tok;
+		}
+
+		tok = strtok(NULL, " "); // Gets the port token
+		if (tok != NULL)
+		{
+			port = atoi(tok);
+		}
+		CON_IP = ip;
+		CON_PORT = port;
+
+		SERVER = connect_to_host(CON_IP, CON_PORT);
+		LOGGINSTATE = 1;
+		printf("attempting connection on\nIP: %s\nPort: %i\n",CON_IP,SERVERPORT);
+		fflush(stdout);
+		
 	}
 
 	/*
