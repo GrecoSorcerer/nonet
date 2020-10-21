@@ -151,7 +151,7 @@ int server(int _port)
                             //Process incoming data from existing clients here ...
 
                             printf("\nClient sent me: %s\n", buffer);
-                            printf("ECHOing it back to the remote host ... ",fdaccept);
+                            printf("ECHOing it back to the remote host %i selret: %i ... ",fdaccept,selret);
                             if (send(fdaccept, buffer, strlen(buffer), 0) == strlen(buffer))
                                 printf("Done!\n");
 								fflush(stdout);

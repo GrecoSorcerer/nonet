@@ -51,7 +51,6 @@ int handleCommand(char *command_str, int fd)
 	{
 		command_str[len-1] = '\0';
 	}
-
 	
 	if (!strncmp(command_str,CMD_AUTHOR,STRLEN_AUTHOR))
 	{
@@ -118,11 +117,20 @@ int handleCommand(char *command_str, int fd)
 		CON_IP = ip;
 		CON_PORT = port;
 
+		
+		
 		SERVER = connect_to_host(CON_IP, CON_PORT);
+		
 		LOGGINSTATE = 1;
 		printf("attempting connection on\nIP: %s\nPort: %i\n",CON_IP,CON_PORT);
-		fflush(stdout);
 		
+	} else if (!strncmp(command_str, CMD_BROADCAST, STRLEN_BROADCAST)) {
+
+		if(send(SERVER, command_str, strlen(command_str), 0) == strlen(command_str))
+		{
+			printf("Done!\n");
+			fflush(stdout);
+		}
 	}
 
 	/*
