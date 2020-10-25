@@ -21,6 +21,7 @@
  * This file contains the client.
  */
 #include <stdio.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <sys/socket.h>
 #include <strings.h>
@@ -144,7 +145,7 @@ int client(char *ip, int listen_port)
 						
                         
                     }
-                    */
+                    
                     // Read from existing connections 
                     else {
                         // Initialize buffer to receieve response 
