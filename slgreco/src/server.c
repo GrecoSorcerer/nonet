@@ -33,7 +33,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/socket.h>
+#include <sys/types.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
 #include <strings.h>
 #include <string.h>
 #include <unistd.h>
@@ -51,6 +54,7 @@ int server(int _port)
 	PORT = _port;
     int port, server_socket, head_socket, selret, sock_index, fdaccept = 0, caddr_len;
     struct sockaddr_in server_addr, client_addr;
+    
     fd_set master_list, watch_list;
 	
     /* Socket */
@@ -122,32 +126,60 @@ int server(int _port)
                         free(cmd);
                     }
                     /* Check if new client is requesting connection */
-                    else if (sock_index == server_socket) {
+                    else if (sock_index == server_socket)
+                    {
                         caddr_len = sizeof(client_addr);
                         fdaccept = accept(server_socket, (struct sockaddr*)&client_addr, &caddr_len);
                         if (fdaccept < 0)
                             perror("Accept failed.");
 
                         printf("\nRemote Host connected!\n");
-
+						
+						struct addrinfo *client_conn, hints;
+						memset(&hints, 0, sizeof(hints));
+						hints.ai_family = AF_UNSPEC;
+						hints.ai_socktype = SOCK_STREAM;
+						
+						printf("%i",client_addr.sin_port);
+						//int p = (int) ntohs(client_addr.sin_port);
+						//char cport = (char) p;
+						//printf("%d", client_addr);
+						char* cip = inet_ntoa(client_addr.sin_addr);
+						
+						//printf("\n")
+						//printf("New client %s:%i\n",cip,p);
+/*
+						getaddrinfo(cip, cport, &hints, &client_conn);
+						for (int con = 0; con < sizeof(LOGGED_IN); con++)
+						{
+							if (LOGGED_IN[con].isLoggedIn == 0)
+							{
+								LOGGED_IN[con].isLoggedIn = 1;
+								LOGGED_IN[con].client_info = client_conn;
+							}
+						}
+*/					
                         /* Add to watched socket list */
                         FD_SET(fdaccept, &master_list);
                         if (fdaccept > head_socket) head_socket = fdaccept;
                     }
                     /* Read from existing clients */
-                    else {
+                    else
+                    {
                         /* Initialize buffer to receieve response */
                         char* buffer = (char*)malloc(sizeof(char) * BUFFER_SIZE);
                         memset(buffer, '\0', BUFFER_SIZE);
 
-                        if (recv(sock_index, buffer, BUFFER_SIZE, 0) <= 0) {
+                        if (recv(sock_index, buffer, BUFFER_SIZE, 0) <= 0)
+                        {
                             close(sock_index);
                             printf("Remote Host terminated connection!\n");
 
                             /* Remove from watched list */
                             FD_CLR(sock_index, &master_list);
                         }
-                        else {
+                        else
+                        {
                             //Process incoming data from existing clients here ...
 
                             printf("\nClient sent me: %s\n", buffer);
@@ -155,11 +187,11 @@ int server(int _port)
 
 
 							
-                            //if(handleServerCommand(buffer, sock_index) != 1)
-                            //{
+                            if(handleServerCommand(buffer, sock_index) == 1)
+                            {
 								if (send(sock_index, buffer, strlen(buffer), 0) == strlen(buffer))
 									printf("Done!\n");
-							//}
+							}
 							
                         }
 						fflush(stdout);

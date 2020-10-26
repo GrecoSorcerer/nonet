@@ -35,13 +35,12 @@
 #include "../include/logger.h"
 
 // EXTERN Variables defined in header file
-int CLIENTPORT = -1; // No listening port set
 int LOGGINSTATE = 0; // User not logged in 
 int SERVER = -1; // fd value
 int CON_PORT = -1;
 char *CON_IP = "0.0.0.0";
 
-int client(char *ip, int listen_port)
+int client(int listen_port)
 {
 	PORT = listen_port;
 	
@@ -49,7 +48,7 @@ int client(char *ip, int listen_port)
 
 	while(!LOGGINSTATE) 
 	{
-		printf("\n%i [PA1-Client@CSE489/589]$ ",STDIN);
+		printf("\n[PA1-Client@CSE489/589]$ ",STDIN);
 		fflush(stdout);
 
 		char* msg = (char*)malloc(sizeof(char) * MSG_SIZE);
@@ -76,7 +75,7 @@ int client(char *ip, int listen_port)
 	lclient_addr.sin_family = AF_INET;
 	lclient_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	lclient_addr.sin_port = htons(PORT);
-		
+	printf("%i %i %i %i\n",PORT, lclient_addr.sin_port, ntohs(PORT), ntohs(lclient_addr.sin_port));
 	// Bind 
 	if (bind(client_socket, (struct sockaddr*)&lclient_addr, sizeof(lclient_addr)) < 0)
 		perror("Bind failed\n");
@@ -95,8 +94,7 @@ int client(char *ip, int listen_port)
 	// Register the server
 	FD_SET(SERVER, &master_list);
 	head_socket = client_socket;
-		
-	printf("\n$$$\n");
+
 	fflush(stdout);
 
 	while(TRUE){
@@ -105,18 +103,17 @@ int client(char *ip, int listen_port)
 		// Zero select FD sets 
 		// struct timeval tv;
 		// tv.tv_sec = 5;
-		
+		printf("\n[PA1-Client@CSE489/589]$ ");
+		fflush(stdout);
         selret = select(head_socket + 1, &watch_list, NULL, NULL, NULL);
         if (selret < 0) {
             perror("select failed.");
 		}
 
-
+		
         // Check if we have sockets/STDIN to process
         if (selret > 0) {
-			printf("\n[PA1-Client@CSE489/589]$ ");
-			fflush(stdout);
-
+			
             // Loop through socket descriptors to check which ones are ready 
             for (sock_index = 0; sock_index <= head_socket; sock_index += 1) {
                 if (FD_ISSET(sock_index, &watch_list)) {

@@ -72,14 +72,13 @@ int main(int argc, char **argv)
 	
 	if (!strcmp(argv[1],"s"))
 	{
-		_Bool IS_CLIENT = 0;
+		IS_CLIENT = 0;
 		server(atoi(argv[2]));
 	}
 	else if (!strcmp(argv[1],"c"))
 	{
-		CON_IP = "128.205.36.36";
 		IS_CLIENT = 1;
-		client(CON_IP,atoi(argv[2]));
+		client(atoi(argv[2]));
 	}
 	
 	return 0;
