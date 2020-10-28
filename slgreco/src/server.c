@@ -132,6 +132,9 @@ int server(int _port)
 
                         /* Add to watched socket list */
                         FD_SET(fdaccept, &master_list);
+			printf("\n %d\n",fdaccept);
+                        printf(master_list);
+
                         if (fdaccept > head_socket) head_socket = fdaccept;
                     }
                     /* Read from existing clients */
