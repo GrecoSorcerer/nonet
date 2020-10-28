@@ -22,6 +22,18 @@ int STRLEN_BROADCAST = strlen(CMD_BROADCAST);
 int STRLEN_LOGIN	 = strlen(CMD_LOGIN);
 int STRLEN_IP 		 = strlen(CMD_IP);
 int STRLEN_PORT		 = strlen(CMD_PORT);
+int STRLEN_EXIT          = strlen(CMD_EXIT);
+int STRLEN_SEND          = strlen(CMD_SEND);
+
+bool isValidIP(char *IP)
+{
+        struct sockaddr_in s;
+        int i=inet_pton(AF_INET,IP,&(s.sin_addr));
+        if(i==0)
+        return false;
+
+        return true;
+}
 
 void get_IP_and_Hostname(char **hostName, char **IP)
 {
@@ -124,7 +136,30 @@ int handleCommand(char *command_str, int fd)
 		LOGGINSTATE = 1;
 		printf("attempting connection on\nIP: %s\nPort: %i\n",CON_IP,CON_PORT);
 		
-	} else if (!strncmp(command_str, CMD_BROADCAST, STRLEN_BROADCAST)) {
+	}
+	else if(!strncmp(command_str, CMD_SEND, STRLEN_SEND))
+        {
+                char * tok;
+                char * msg;
+                tok = strtok(command_str, " "); // Gets the command token
+                tok = strtok(NULL, " ");
+                if (tok != NULL)
+                {
+                        msg = tok;
+                }
+                send(SERVER, msg, strlen(msg), 0 );
+        }
+        else if (!strncmp(command_str,CMD_EXIT,STRLEN_EXIT))
+        {
+
+                        cse4589_print_and_log("[%s:SUCCESS]\n",command_str);
+                        cse4589_print_and_log("EXITing from host\n");
+                        cse4589_print_and_log("[%s:END]\n",command_str);
+                //      close(sockfd);
+                        exit(-1);
+        }
+	
+	else if (!strncmp(command_str, CMD_BROADCAST, STRLEN_BROADCAST)) {
 
 		if(send(SERVER, command_str, strlen(command_str), 0) == strlen(command_str))
 		{
