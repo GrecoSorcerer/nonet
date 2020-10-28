@@ -6,6 +6,10 @@
 #define CMD_PORT		"PORT"
 #define CMD_LOGIN		"LOGIN"
 #define CMD_BROADCAST 	"BROADCAST"
+#define CMD_EXIT                "EXIT"
+#define CMD_SEND                "SEND"
+
+
 
 extern int STRLEN_AUTHOR, STRLEN_BROADCAST, STRLEN_IP, STRLEN_PORT, STRLEN_LOGIN;
 
