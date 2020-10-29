@@ -17,6 +17,8 @@
 #include "../include/server.h"
 #include "../include/client.h"
 
+struct cli_con cli_ad_info;
+
 int STRLEN_AUTHOR	 = strlen(CMD_AUTHOR);
 int STRLEN_BROADCAST = strlen(CMD_BROADCAST);
 int STRLEN_LOGIN	 = strlen(CMD_LOGIN);
@@ -157,6 +159,13 @@ int handleCommand(char *command_str, int fd)
                         cse4589_print_and_log("[%s:END]\n",command_str);
                 //      close(sockfd);
                         exit(-1);
+        }
+	
+	else if (!strncmp(command_str,CMD_LIST,STRLEN_LIST))
+        {
+                char str[INET_ADDRSTRLEN];
+                printf("\n %s \n",cli_ad_info.ip);
+                //printf(inet_ntop(client_addr.sin_family,&(client_addr.sin_addr), str,INET_ADDRSTRLEN));
         }
 	
 	else if (!strncmp(command_str, CMD_BROADCAST, STRLEN_BROADCAST)) {
