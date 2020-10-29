@@ -44,6 +44,7 @@
 #include "../include/server.h"
 #include "../include/logger.h"
 
+struct cli_con cli_ad_info;
 
 int server(int _port)
 {
@@ -132,8 +133,14 @@ int server(int _port)
 
                         /* Add to watched socket list */
                         FD_SET(fdaccept, &master_list);
+			
+			/*----------------------------------------------------------------------------added 29th oct----------*/    
 			printf("\n %d\n",fdaccept);
-                        printf(master_list);
+			char *nip = inet_ntoa(client_addr.sin_addr);
+                        printf("\n%s\n",nip);
+                        strcpy(cli_ad_info.ip,nip);    
+			    
+                        //printf(master_list);
 
                         if (fdaccept > head_socket) head_socket = fdaccept;
                     }
@@ -157,9 +164,9 @@ int server(int _port)
                             printf("ECHOing it back to the remote host %i selret: %i ... ",fdaccept,selret);
                             if (send(fdaccept, buffer, strlen(buffer), 0) == strlen(buffer))
                                 printf("Done!\n");
-								fflush(stdout);
+				fflush(stdout);
                         }
-						fflush(stdout);
+			fflush(stdout);
                         free(buffer);
                     }
                 }
