@@ -9,6 +9,13 @@
 #define CMD_EXIT                "EXIT"
 #define CMD_SEND                "SEND"
 
+struct cli_con{
+
+int p;
+char *ip;
+char name[50];
+
+};
 
 
 extern int STRLEN_AUTHOR, STRLEN_BROADCAST, STRLEN_IP, STRLEN_PORT, STRLEN_LOGIN;
