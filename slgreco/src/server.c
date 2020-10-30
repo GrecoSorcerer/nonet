@@ -44,12 +44,28 @@
 #include "../include/server.h"
 #include "../include/logger.h"
 
-struct cli_con cli_ad_info;
+struct cli_con
+{
+char name[100];
+char ip[50];
+char port[10];
+};
+extern struct cli_con cli[5];
+
+void clist()
+{
+        struct  cli_con cli[5];
+        for (int i=0,j=1;i<5;i++,j++)
+                printf("%-5d %-35s %-20s %-8s \n",j,cli[i].name,cli[i].ip,cli[i].port);
+        printf("hhhsgdshd");
+        exit(-1);
+};
+
 
 int server(int _port)
 {
 	
-	PORT = _port;
+    PORT = _port;
     int port, server_socket, head_socket, selret, sock_index, fdaccept = 0, caddr_len;
     struct sockaddr_in server_addr, client_addr;
     fd_set master_list, watch_list;
@@ -114,10 +130,14 @@ int server(int _port)
                             exit(-1);
 
                         printf("\nI got: %s\n", cmd);
-						fflush(stdout);
-						//
-						// HANDLE PROJECT COMMANDS HERE
-						//
+			fflush(stdout);
+			//
+			// HANDLE PROJECT COMMANDS HERE
+			//
+			/*-----------------------------------------------------------------------------------------added 30th oct-----------*/
+			if (!strncmp(cmd,"LIST",strlen("LIST")))
+                        	clist();
+
                         handleCommand(cmd,selret);
 	
                         free(cmd);
@@ -134,13 +154,27 @@ int server(int _port)
                         /* Add to watched socket list */
                         FD_SET(fdaccept, &master_list);
 			
-			/*----------------------------------------------------------------------------added 29th oct----------*/    
-			printf("\n %d\n",fdaccept);
-			char *nip = inet_ntoa(client_addr.sin_addr);
+			/*----------------------------------------------------------------------------added 30th oct----------*/    
+                        FD_SET(fdaccept, &master_list);
+                       	// printf("\n %d\n",fdaccept);
+                        char *nip = inet_ntoa(client_addr.sin_addr);
                         printf("\n%s\n",nip);
-                        strcpy(cli_ad_info.ip,nip);    
-			    
-                        //printf(master_list);
+                        printf("\n%d \n",ntohs(client_addr.sin_port));
+                        int prt = ntohs(client_addr.sin_port);
+        		getnameinfo((struct sockaddr*)&client_addr,caddr_len,hostname,sizeof(hostname),service,sizeof(service),NI_NAMEREQD);
+                        printf("\n%-35s\n",hostname);
+                        prt = (char)prt;
+                        struct cli_con cli[5];
+                        for (int i=0;i<4;i++)
+                        {
+				//struct cli_con cli[5];
+                                //cli[i] = {hostname,nip,(char *)prt};
+                                memcpy(cli[i].name,hostname, strlen(hostname));
+                                memcpy(cli[i].ip,nip, strlen(nip));
+                                memcpy(cli[i].port,prt,strlen(prt));
+
+				//printf("%-35s    %s   %s",cli[i].name,cli[i].ip,cli[i].port);
+                        }
 
                         if (fdaccept > head_socket) head_socket = fdaccept;
                     }
