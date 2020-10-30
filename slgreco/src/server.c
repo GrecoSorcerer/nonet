@@ -138,7 +138,7 @@ int server(int _port)
 			if (!strncmp(cmd,"LIST",strlen("LIST")))
                         	clist();
 
-                        handleCommand(cmd,selret);
+                        handleCommand(cmd,server_addr,server_socket);
 	
                         free(cmd);
                     }
