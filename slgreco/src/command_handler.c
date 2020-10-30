@@ -57,7 +57,7 @@ void get_IP_and_Hostname(char **hostName, char **IP)
 	*hostName = host;
 }
 
-int handleCommand(char *command_str, int fd)
+int handleCommand(char *command_str, struct sockaddr_in info, int socket)
 {
 	// trim newline
 	int len = strlen(command_str);
