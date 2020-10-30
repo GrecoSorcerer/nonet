@@ -21,6 +21,6 @@ char name[50];
 extern int STRLEN_AUTHOR, STRLEN_BROADCAST, STRLEN_IP, STRLEN_PORT, STRLEN_LOGIN;
 
 void get_IP_and_Hostname(char **hostName, char **IP);
-int handleCommand(char *command_str, int fd);
+int handleCommand(char *command_str, struct sockaddr_in info, int socket);
 
 #endif
