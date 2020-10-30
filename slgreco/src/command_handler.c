@@ -17,7 +17,7 @@
 #include "../include/server.h"
 #include "../include/client.h"
 
-struct cli_con cli_ad_info;
+struct cli_con;
 
 int STRLEN_AUTHOR	 = strlen(CMD_AUTHOR);
 int STRLEN_BROADCAST = strlen(CMD_BROADCAST);
@@ -160,14 +160,25 @@ int handleCommand(char *command_str, int fd)
                 //      close(sockfd);
                         exit(-1);
         }
-	
+	/*--------------------------------------------------------------------------------------------------------------------30th oct---------------*/
 	else if (!strncmp(command_str,CMD_LIST,STRLEN_LIST))
         {
                 char str[INET_ADDRSTRLEN];
-                printf("\n %s \n",cli_ad_info.ip);
+                printf("\n %s \n",inet_ntoa(info.sin_addr));
+                //printf("cli[0].name   %s",cli[0].name);
                 //printf(inet_ntop(client_addr.sin_family,&(client_addr.sin_addr), str,INET_ADDRSTRLEN));
+
         }
-	
+	        else if (!strncmp(command_str,CMD_LOGOUT,STRLEN_LOGOUT))
+        {
+
+                        cse4589_print_and_log("[%s:SUCCESS]\n",command_str);
+                        cse4589_print_and_log("LOGGING out from host\n");
+                        cse4589_print_and_log("[%s:END]\n",command_str);
+                        close(socket);
+                       exit(-1);
+        }
+	/*-------------------------------------------------------------------------------------------------------------------upto here-30th--------------*/
 	else if (!strncmp(command_str, CMD_BROADCAST, STRLEN_BROADCAST)) {
 
 		if(send(SERVER, command_str, strlen(command_str), 0) == strlen(command_str))
