@@ -45,7 +45,10 @@ int client(char *ip, int listen_port)
 	PORT = listen_port;
 	
 	int server_port = -1; // -1 if not set
-
+	int head_socket, client_socket, selret, sock_index, fdaccept = 0, caddr_len;
+	struct sockaddr_in lclient_addr, rclient_addr;
+	fd_set master_list, watch_list;
+	
 	while(!LOGGINSTATE) 
 	{
 		printf("\n%i [PA1-Client@CSE489/589]$ ",STDIN);
@@ -58,15 +61,10 @@ int client(char *ip, int listen_port)
 			exit(-1);
 
 		//handle_client_command(msg);
-		handleCommand(msg, -1);
+		handleCommand(msg, lclient_addr,client_socket);
 
 	}
 
-	int head_socket, client_socket, selret, sock_index, fdaccept = 0, caddr_len;
-	struct sockaddr_in lclient_addr, rclient_addr;
-	fd_set master_list, watch_list;
-
-		
 	// Socket
 	client_socket = socket(AF_INET, SOCK_STREAM, 0);
 	if (client_socket < 0)
@@ -88,8 +86,8 @@ int client(char *ip, int listen_port)
 	FD_ZERO(&watch_list);
 
 	// Register the listening socket
-    FD_SET(client_socket, &master_list);  // Not used, not yet implementing p2p
-    // Register STDIN 
+	FD_SET(client_socket, &master_list);  // Not used, not yet implementing p2p
+    	// Register STDIN 
 	FD_SET(STDIN, &master_list);
 	// Register the server
 	FD_SET(SERVER, &master_list);
@@ -116,33 +114,28 @@ int client(char *ip, int listen_port)
 			printf("\n[PA1-Client@CSE489/589]$ ");
 			fflush(stdout);
 
-            // Loop through socket descriptors to check which ones are ready 
-            for (sock_index = 0; sock_index <= head_socket; sock_index += 1) {
-                if (FD_ISSET(sock_index, &watch_list)) {
+        	        // Loop through socket descriptors to check which ones are ready 
+            		for (sock_index = 0; sock_index <= head_socket; sock_index += 1) {
+                	if (FD_ISSET(sock_index, &watch_list)) {
 					
 					
-                    // Check if new command on STDIN 
-                    if (sock_index == STDIN) {
-		
-						char* cmd = (char*)malloc(sizeof(char) * CMD_SIZE);
+                    	// Check if new command on STDIN 
+                    	if (sock_index == STDIN) {
+					char* cmd = (char*)malloc(sizeof(char) * CMD_SIZE);
+                		        memset(cmd, '\0', CMD_SIZE);
+		                        if (fgets(cmd, CMD_SIZE - 1, stdin) == NULL)//Mind the newline character that will be written to cmd
+                		            exit(-1);
 
-                        memset(cmd, '\0', CMD_SIZE);
-                        if (fgets(cmd, CMD_SIZE - 1, stdin) == NULL)//Mind the newline character that will be written to cmd
-                            exit(-1);
+                        		printf("I got: %s\n", cmd);
+					handleCommand(cmd,lclient_addr,client_socket);
 
-                        printf("I got: %s\n", cmd);
-
-						handleCommand(cmd,selret);
-
-						free(cmd);
+					free(cmd);
                     }
                     // Check if remote client is requesting connection to this client
                     else if (sock_index == client_socket) {
                         
                         printf("\nRemote Host wanted to connect, refused!\n");
-						fflush(stdout);
-						
-                        
+			fflush(stdout);
                     }
                     */
                     // Read from existing connections 
@@ -160,15 +153,14 @@ int client(char *ip, int listen_port)
                         }
                         else {
                             //Process incoming data here ...
-
                             printf("This process was sent: %s\n", buffer);
                                        
                         }
-						fflush(stdout);
+			fflush(stdout);
                         free(buffer);
                     }
-				}
-			}
+		}
+		}
 		}
 	}
 }
